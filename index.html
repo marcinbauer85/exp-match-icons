@@ -56,6 +56,8 @@
     <tbody></tbody>
   </table>
 
+  <div id="icon-summary" style="margin-top:12px; font-weight:600;"></div>
+
   <script>
     // Each item maps the provided Material icon to a visually similar Fluent icon.
     const mappings = [
@@ -346,7 +348,21 @@
             }
           });
 
-          if (missing.length) console.warn('Iconify: missing icons detected:', missing);
+          // Count missing icons per set (prefix before ':') and update summary
+          const counts = { mdi: 0, fluent: 0, tabler: 0, ph: 0, other: 0 };
+          missing.forEach(name => {
+            const parts = name.split(':');
+            const key = parts[0] || 'other';
+            if (counts.hasOwnProperty(key)) counts[key]++;
+            else counts.other++;
+          });
+
+          const summaryEl = document.getElementById('icon-summary');
+          if (summaryEl) {
+            summaryEl.innerHTML = `Missing icons — Material (mdi): ${counts.mdi}, Fluent: ${counts.fluent}, Tabler: ${counts.tabler}, Phosphor: ${counts.ph}` + (counts.other ? `, Other: ${counts.other}` : '');
+          }
+
+          if (missing.length) console.warn('Iconify: missing icons detected:', missing, counts);
           else console.info('Iconify: all icons rendered successfully');
         }, 2000);
       });
