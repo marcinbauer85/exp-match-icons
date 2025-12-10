@@ -54,6 +54,19 @@
       </tr>
     </thead>
     <tbody></tbody>
+    <tfoot>
+      <tr>
+        <td class="col-icon" id="summary-material-count"></td>
+        <td class="col-name"></td>
+        <td class="col-icon" id="summary-fluent-missing"></td>
+        <td class="col-name"></td>
+        <td class="col-icon" id="summary-tabler-missing"></td>
+        <td class="col-name"></td>
+        <td class="col-icon" id="summary-ph-missing"></td>
+        <td class="col-name"></td>
+        <td id="summary-notes"></td>
+      </tr>
+    </tfoot>
   </table>
 
   <div id="icon-summary" style="margin-top:12px; font-weight:600;"></div>
@@ -317,6 +330,11 @@
     });
     // Tell Iconify to scan right after we add the rows so icons render immediately
     try { if (window.Iconify && typeof Iconify.scan === 'function') Iconify.scan(); } catch (e) {}
+    // Populate the table footer material count immediately
+    try {
+      const totalEl = document.getElementById('summary-material-count');
+      if (totalEl) totalEl.textContent = `Total: ${mappings.length}`;
+    } catch (e) {}
   </script>
 
     <script>
@@ -361,6 +379,16 @@
           if (summaryEl) {
             summaryEl.innerHTML = `Missing icons — Material (mdi): ${counts.mdi}, Fluent: ${counts.fluent}, Tabler: ${counts.tabler}, Phosphor: ${counts.ph}` + (counts.other ? `, Other: ${counts.other}` : '');
           }
+
+          // Also populate table footer summary cells
+          try {
+            const fFluent = document.getElementById('summary-fluent-missing');
+            const fTabler = document.getElementById('summary-tabler-missing');
+            const fPh = document.getElementById('summary-ph-missing');
+            if (fFluent) fFluent.textContent = `Missing: ${counts.fluent}`;
+            if (fTabler) fTabler.textContent = `Missing: ${counts.tabler}`;
+            if (fPh) fPh.textContent = `Missing: ${counts.ph}`;
+          } catch (e) {}
 
           if (missing.length) console.warn('Iconify: missing icons detected:', missing, counts);
           else console.info('Iconify: all icons rendered successfully');
