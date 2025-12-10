@@ -348,22 +348,48 @@
         } catch (e) { /* ignore */ }
 
         // Give Iconify time to fetch and render SVGs, then check and mark missing icons.
-        setTimeout(() => {
-          // Second scan to be extra safe
-          try { if (window.Iconify && typeof Iconify.scan === 'function') Iconify.scan(); } catch (e) {}
+        (async function checkWithRetries() {
+          const maxRetries = 5;
+          let attempt = 0;
+          let lastMissing = null;
+          let finalMissing = [];
 
-          const missing = [];
-          document.querySelectorAll('.icon.iconify').forEach(el => {
-            const iconName = el.getAttribute('data-icon') || '';
-            const hasSvg = el.querySelector('svg') !== null;
-            if (!hasSvg) {
-              missing.push(iconName);
-              // Add a CSS marker (non-destructive) so the span still has its data-icon.
-              el.classList.add('icon-missing');
-              el.title = `Icon failed to load: ${iconName}`;
-            } else {
-              el.classList.remove('icon-missing');
+          function scanIcons() {
+            try { if (window.Iconify && typeof Iconify.scan === 'function') Iconify.scan(); } catch (e) {}
+            const missingNow = [];
+            document.querySelectorAll('.icon.iconify').forEach(el => {
+              const iconName = el.getAttribute('data-icon') || '';
+              const hasSvg = el.querySelector('svg') !== null;
+              if (!hasSvg) {
+                missingNow.push({ name: iconName, el });
+              }
+            });
+            return missingNow;
+          }
+
+          while (attempt < maxRetries) {
+            // run a scan and wait a bit
+            const found = scanIcons();
+            // If the missing list is stable (same as last) or empty, stop retrying
+            const names = found.map(x => x.name).sort().join('|');
+            if (names === lastMissing) {
+              finalMissing = found;
+              break;
             }
+            lastMissing = names;
+            finalMissing = found;
+            if (found.length === 0) break;
+            // exponential backoff
+            await new Promise(r => setTimeout(r, 300 * Math.pow(2, attempt)));
+            attempt++;
+          }
+
+          // Now mark missing icons non-destructively and compute counts
+          const missing = finalMissing.map(x => x.name);
+          finalMissing.forEach(item => {
+            const { name, el } = item;
+            el.classList.add('icon-missing');
+            el.title = `Icon failed to load: ${name}`;
           });
 
           // Count missing icons per set (prefix before ':') and update summary
@@ -377,7 +403,7 @@
 
           const summaryEl = document.getElementById('icon-summary');
           if (summaryEl) {
-            summaryEl.innerHTML = `Missing icons — Material (mdi): ${counts.mdi}, Fluent: ${counts.fluent}, Tabler: ${counts.tabler}, Phosphor: ${counts.ph}` + (counts.other ? `, Other: ${counts.other}` : '');
+            summaryEl.innerHTML = `Checked after ${attempt + 1} attempt(s). Missing icons — Material (mdi): ${counts.mdi}, Fluent: ${counts.fluent}, Tabler: ${counts.tabler}, Phosphor: ${counts.ph}` + (counts.other ? `, Other: ${counts.other}` : '');
           }
 
           // Also populate table footer summary cells
@@ -392,7 +418,7 @@
 
           if (missing.length) console.warn('Iconify: missing icons detected:', missing, counts);
           else console.info('Iconify: all icons rendered successfully');
-        }, 2000);
+        })();
       });
     </script>
 </body>
