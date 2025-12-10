@@ -14,6 +14,17 @@
     .col-icon { width: 150px; }
     .col-name { width: 200px; }
     small { color: #666; }
+    /* Visual marker for missing icons. Uses data-icon to show fallback text without
+       altering the element's innerHTML or data attributes so Iconify can retry. */
+    .icon-missing::after {
+      content: attr(data-icon) " (missing)";
+      color: #c00;
+      font-size: 12px;
+      display: inline-block;
+      margin-left: 8px;
+      vertical-align: middle;
+      opacity: 0.95;
+    }
   </style>
 </head>
 <body>
@@ -133,7 +144,7 @@
       { mat: "mdi:snowflake", flu: "fluent:snowflake-24-regular", tab: "tabler:snowflake", ph: "ph:snowflake" },
       { mat: "mdi:snowflake-melt", flu: "fluent:snowflake-24-regular", tab: "tabler:snowflake", ph: "ph:snowflake", note: "melt not available" },
       { mat: "mdi:leaf", flu: "fluent:leaf-one-24-regular", tab: "tabler:leaf", ph: "ph:leaf" },
-      { mat: "mdi:ph", flu: "fluent:beaker-24-regular", tab: "tabler:flask", ph: "ph:beaker", note: "lab/chemistry" },
+      { mat: "mdi:beaker", flu: "fluent:beaker-24-regular", tab: "tabler:flask", ph: "ph:beaker", note: "lab/chemistry" },
       { mat: "mdi:molecule", flu: "fluent:molecule-24-regular", tab: "tabler:atom-2", ph: "ph:atom" },
       { mat: "mdi:molecule-co2", flu: "fluent:molecule-24-regular", tab: "tabler:atom-2", ph: "ph:atom", note: "label CO₂ nearby" },
       { mat: "mdi:molecule-co", flu: "fluent:molecule-24-regular", tab: "tabler:atom-2", ph: "ph:atom", note: "label CO nearby" },
@@ -302,7 +313,44 @@
       `;
       tbody.appendChild(tr);
     });
+    // Tell Iconify to scan right after we add the rows so icons render immediately
+    try { if (window.Iconify && typeof Iconify.scan === 'function') Iconify.scan(); } catch (e) {}
   </script>
+
+    <script>
+      // Non-destructive runtime check: retry Iconify scan and mark missing icons visually.
+      window.addEventListener('load', () => {
+        // Ask Iconify to scan the DOM in case initial load happened before icon elements were added.
+        try {
+          if (window.Iconify && typeof Iconify.scan === 'function') {
+            Iconify.scan();
+          }
+        } catch (e) { /* ignore */ }
+
+        // Give Iconify time to fetch and render SVGs, then check and mark missing icons.
+        setTimeout(() => {
+          // Second scan to be extra safe
+          try { if (window.Iconify && typeof Iconify.scan === 'function') Iconify.scan(); } catch (e) {}
+
+          const missing = [];
+          document.querySelectorAll('.icon.iconify').forEach(el => {
+            const iconName = el.getAttribute('data-icon') || '';
+            const hasSvg = el.querySelector('svg') !== null;
+            if (!hasSvg) {
+              missing.push(iconName);
+              // Add a CSS marker (non-destructive) so the span still has its data-icon.
+              el.classList.add('icon-missing');
+              el.title = `Icon failed to load: ${iconName}`;
+            } else {
+              el.classList.remove('icon-missing');
+            }
+          });
+
+          if (missing.length) console.warn('Iconify: missing icons detected:', missing);
+          else console.info('Iconify: all icons rendered successfully');
+        }, 2000);
+      });
+    </script>
 </body>
 </html>
 
