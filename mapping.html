@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Material → Fluent Icon Mapping</title>
+  <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; margin: 24px; }
+    table { border-collapse: collapse; width: 100%; font-size: 14px; }
+    th, td { border: 1px solid #ddd; padding: 8px 10px; vertical-align: middle; }
+    th { background: #f5f5f5; text-align: left; position: sticky; top: 0; }
+    tr:nth-child(even) { background: #fafafa; }
+    .icon { font-size: 48px; display: inline-flex; align-items: center; }
+    .col-icon { width: 150px; }
+    .col-name { width: 200px; }
+    small { color: #666; }
+  </style>
+</head>
+<body>
+  <h2>Material → Fluent Icon Mapping</h2>
+  <p>
+    Icons load from Iconify:
+    <a href="https://icon-sets.iconify.design/material-symbols/" target="_blank" rel="noreferrer">Material</a> &
+    <a href="https://icon-sets.iconify.design/fluent/" target="_blank" rel="noreferrer">Fluent</a>.
+    Update the <code>mappings</code> array below to refine pairings. Notes can mention style differences (filled vs. regular, outline vs. solid, etc.).
+  </p>
+  <p>
+    <small>For automated visual matching, fetch SVGs and run a similarity search with DINOv3 embeddings (https://github.com/facebookresearch/dinov3). This page is the manual/visual pass.</small>
+  </p>
+
+  <table id="icon-table">
+    <thead>
+      <tr>
+        <th class="col-icon">Material</th>
+        <th class="col-name">Material Name</th>
+        <th class="col-icon">Fluent</th>
+        <th class="col-name">Fluent Name</th>
+        <th class="col-icon">Tabler</th>
+        <th class="col-name">Tabler Name</th>
+        <th class="col-icon">Phosphor</th>
+        <th class="col-name">Phosphor Name</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    // Each item maps the provided Material icon to a visually similar Fluent icon.
+    const mappings = [
+      // Identity & status
+      { mat: "mdi:account", flu: "fluent:person-24-regular", tab: "tabler:user", ph: "ph:user", note: "profile bust" },
+      { mat: "mdi:account-arrow-right", flu: "fluent:person-arrow-right-24-regular", tab: "tabler:user-up", ph: "ph:user-switch", note: "person + arrow" },
+      { mat: "mdi:chat-sleep", flu: "fluent:chat-off-24-regular", tab: "tabler:message-off", ph: "ph:chat-slash", note: "muted chat" },
+      { mat: "mdi:speaker-message", flu: "fluent:chat-help-24-regular", tab: "tabler:message-question", ph: "ph:chat-circle-dots", note: "bubble indicator" },
+      { mat: "mdi:bullhorn", flu: "fluent:megaphone-24-regular", tab: "tabler:megaphone", ph: "ph:megaphone-simple" },
+      { mat: "mdi:bell-ring", flu: "fluent:alert-24-regular", tab: "tabler:bell-ringing", ph: "ph:bell-ringing" },
+      { mat: "mdi:alert-circle", flu: "fluent:error-circle-24-regular", tab: "tabler:alert-circle", ph: "ph:warning-circle" },
+      { mat: "mdi:alert-circle-outline", flu: "fluent:error-circle-24-regular", tab: "tabler:alert-circle", ph: "ph:warning-circle", note: "outline" },
+      { mat: "mdi:check-circle-outline", flu: "fluent:checkmark-circle-24-regular", tab: "tabler:circle-check", ph: "ph:check-circle" },
+      { mat: "mdi:close-circle-outline", flu: "fluent:dismiss-circle-24-regular", tab: "tabler:circle-x", ph: "ph:x-circle" },
+
+      // Security
+      { mat: "mdi:lock", flu: "fluent:lock-closed-24-regular", tab: "tabler:lock", ph: "ph:lock" },
+      { mat: "mdi:lock-alert", flu: "fluent:shield-error-24-regular", tab: "tabler:lock-exclamation", ph: "ph:lock-warning", note: "lock + alert" },
+      { mat: "mdi:lock-clock", flu: "fluent:lock-clock-24-regular", tab: "tabler:lock-clock", ph: "ph:lock-clock" },
+      { mat: "mdi:lock-open", flu: "fluent:unlock-24-regular", tab: "tabler:lock-open", ph: "ph:lock-open" },
+      { mat: "mdi:lock-open-variant", flu: "fluent:unlock-24-filled", tab: "tabler:lock-open", ph: "ph:lock-open", note: "strong open" },
+      { mat: "mdi:shield", flu: "fluent:shield-24-regular", tab: "tabler:shield", ph: "ph:shield" },
+      { mat: "mdi:shield-lock", flu: "fluent:shield-lock-24-regular", tab: "tabler:shield-lock", ph: "ph:shield-check" },
+      { mat: "mdi:security", flu: "fluent:shield-checkmark-24-regular", tab: "tabler:shield-check", ph: "ph:shield-check", note: "security OK" },
+      { mat: "mdi:shield-home", flu: "fluent:shield-home-24-regular", tab: "tabler:shield-home", ph: "ph:shield-home" },
+      { mat: "mdi:shield-moon", flu: "fluent:shield-moon-24-regular", tab: "tabler:shield-moon", ph: "ph:shield-moon" },
+      { mat: "mdi:shield-airplane", flu: "fluent:shield-24-regular", tab: "tabler:shield", ph: "ph:shield", note: "closest airplane/shield feel" },
+      { mat: "mdi:shield-off", flu: "fluent:shield-dismiss-24-regular", tab: "tabler:shield-off", ph: "ph:shield-slash" },
+      { mat: "mdi:shield-outline", flu: "fluent:shield-24-regular", tab: "tabler:shield", ph: "ph:shield", note: "outline/regular" },
+
+      // Navigation & arrows
+      { mat: "mdi:arrow-left-right", flu: "fluent:arrow-swap-24-regular", tab: "tabler:arrows-left-right", ph: "ph:arrows-left-right" },
+      { mat: "mdi:arrow-down-box", flu: "fluent:arrow-down-square-24-regular", tab: "tabler:square-arrow-down", ph: "ph:arrow-square-down" },
+      { mat: "mdi:arrow-up-box", flu: "fluent:arrow-up-square-24-regular", tab: "tabler:square-arrow-up", ph: "ph:arrow-square-up" },
+      { mat: "mdi:arrow-collapse-horizontal", flu: "fluent:arrow-collapse-horizontal-24-regular", tab: "tabler:arrows-minimize", ph: "ph:arrows-in-line-horizontal" },
+      { mat: "mdi:arrow-split-vertical", flu: "fluent:arrow-split-24-regular", tab: "tabler:arrows-split", ph: "ph:arrows-split" },
+      { mat: "mdi:arrow-right", flu: "fluent:arrow-right-24-regular", tab: "tabler:arrow-right", ph: "ph:arrow-right" },
+      { mat: "mdi:arrow-down-bold", flu: "fluent:arrow-down-24-filled", tab: "tabler:arrow-big-down", ph: "ph:arrow-fat-down" , note: "bold/filled" },
+      { mat: "mdi:arrow-up-bold", flu: "fluent:arrow-up-24-filled", tab: "tabler:arrow-big-up", ph: "ph:arrow-fat-up" },
+      { mat: "mdi:arrow-all", flu: "fluent:arrow-move-24-regular", tab: "tabler:arrows-move", ph: "ph:arrows-out-cardinal" },
+      { mat: "mdi:arrow-oscillating", flu: "fluent:arrow-sync-24-regular", tab: "tabler:arrows-shuffle", ph: "ph:arrows-clockwise" , note: "oscillating" },
+      { mat: "mdi:arrow-oscillating-off", flu: "fluent:arrow-sync-off-24-regular", tab: "tabler:arrows-shuffle-off", ph: "ph:arrows-counter-clockwise" },
+      { mat: "mdi:arrow-up-down", flu: "fluent:arrow-up-down-24-regular", tab: "tabler:arrows-up-down", ph: "ph:arrows-vertical" },
+
+      // Shapes
+      { mat: "mdi:circle", flu: "fluent:circle-24-regular", tab: "tabler:circle", ph: "ph:circle" },
+      { mat: "mdi:circle-medium", flu: "fluent:circle-20-regular", tab: "tabler:circle-dot", ph: "ph:circle" },
+      { mat: "mdi:circle-slice-8", flu: "fluent:data-pie-24-regular", tab: "tabler:chart-pie", ph: "ph:circle-half-tilt", note: "pie slice" },
+      { mat: "mdi:square", flu: "fluent:square-24-regular", tab: "tabler:square", ph: "ph:square" },
+      { mat: "mdi:square-outline", flu: "fluent:square-24-regular", tab: "tabler:square", ph: "ph:square", note: "outline" },
+      { mat: "mdi:octagon", flu: "fluent:shield-octagon-24-regular", tab: "tabler:octagon", ph: "ph:octagon" },
+      { mat: "mdi:stop", flu: "fluent:stop-24-regular", tab: "tabler:square-filled", ph: "ph:stop" },
+      { mat: "mdi:play", flu: "fluent:play-24-regular", tab: "tabler:player-play", ph: "ph:play" },
+
+      // Time & date
+      { mat: "mdi:clock", flu: "fluent:clock-24-regular" },
+      { mat: "mdi:clock-outline", flu: "fluent:clock-24-regular" },
+      { mat: "mdi:progress-clock", flu: "fluent:clock-arrow-download-24-regular", note: "clock + progress" },
+      { mat: "mdi:calendar", flu: "fluent:calendar-24-regular" },
+      { mat: "mdi:calendar-clock", flu: "fluent:calendar-clock-24-regular" },
+      { mat: "mdi:calendar-check", flu: "fluent:calendar-checkmark-24-regular" },
+      { mat: "mdi:calendar-blank", flu: "fluent:calendar-ltr-24-regular" },
+      { mat: "mdi:date", flu: "fluent:calendar-day-24-regular" },
+
+      // Weather & environment
+      { mat: "mdi:weather-rainy", flu: "fluent:weather-rain-24-regular" },
+      { mat: "mdi:weather-pouring", flu: "fluent:weather-rain-24-filled", note: "heavier rain" },
+      { mat: "mdi:weather-partly-cloudy", flu: "fluent:weather-partly-cloudy-24-regular" },
+      { mat: "mdi:weather-night", flu: "fluent:weather-moon-24-regular" },
+      { mat: "mdi:weather-cloudy", flu: "fluent:weather-cloudy-24-regular" },
+      { mat: "mdi:weather-fog", flu: "fluent:weather-fog-24-regular" },
+      { mat: "mdi:weather-hail", flu: "fluent:weather-snow-shower-24-regular", note: "hail/snow mix" },
+      { mat: "mdi:weather-lightning", flu: "fluent:weather-thunderstorm-24-regular" },
+      { mat: "mdi:weather-lightning-rainy", flu: "fluent:weather-thunderstorm-24-filled" },
+      { mat: "mdi:weather-snowy", flu: "fluent:weather-snow-24-regular" },
+      { mat: "mdi:weather-snowy-rainy", flu: "fluent:weather-snow-shower-24-regular" },
+      { mat: "mdi:weather-sunny", flu: "fluent:weather-sunny-24-regular" },
+      { mat: "mdi:weather-windy", flu: "fluent:weather-windy-24-regular" },
+      { mat: "mdi:weather-windy-variant", flu: "fluent:weather-windy-24-regular" },
+      { mat: "mdi:sun-wireless", flu: "fluent:weather-sunny-high-24-regular", note: "sun + signal vibe" },
+      { mat: "mdi:brightness-5", flu: "fluent:brightness-high-24-regular" },
+      { mat: "mdi:brightness-7", flu: "fluent:brightness-high-24-filled" },
+      { mat: "mdi:heat-wave", flu: "fluent:weather-sunny-high-24-regular" },
+      { mat: "mdi:fire", flu: "fluent:fire-24-regular" },
+      { mat: "mdi:fire-circle", flu: "fluent:fire-24-regular", note: "add circle bg if needed" },
+      { mat: "mdi:snowflake", flu: "fluent:snowflake-24-regular" },
+      { mat: "mdi:snowflake-melt", flu: "fluent:snowflake-24-regular", note: "melt not available" },
+      { mat: "mdi:leaf", flu: "fluent:leaf-one-24-regular" },
+      { mat: "mdi:ph", flu: "fluent:beaker-24-regular", note: "lab/chemistry" },
+      { mat: "mdi:molecule", flu: "fluent:molecule-24-regular" },
+      { mat: "mdi:molecule-co2", flu: "fluent:molecule-24-regular", note: "label CO₂ nearby" },
+      { mat: "mdi:molecule-co", flu: "fluent:molecule-24-regular", note: "label CO nearby" },
+
+      // Energy & power
+      { mat: "mdi:flash", flu: "fluent:flash-24-regular" },
+      { mat: "mdi:lightning-bolt", flu: "fluent:flash-24-filled" },
+      { mat: "mdi:power", flu: "fluent:power-24-regular" },
+      { mat: "mdi:power-sleep", flu: "fluent:power-sleep-24-regular" },
+      { mat: "mdi:power-plug", flu: "fluent:plug-connected-24-regular" },
+      { mat: "mdi:power-plug-off", flu: "fluent:plug-disconnected-24-regular" },
+      { mat: "mdi:restart", flu: "fluent:arrow-clockwise-24-regular", note: "restart" },
+      { mat: "mdi:refresh-auto", flu: "fluent:arrow-clockwise-24-filled", note: "auto refresh" },
+      { mat: "mdi:current-ac", flu: "fluent:plug-connected-24-regular", note: "AC plug look" },
+      { mat: "mdi:transmission-tower", flu: "fluent:weather-thunderstorm-24-regular", note: "closest shape" },
+
+      // Batteries & sensors
+      { mat: "mdi:battery", flu: "fluent:battery-5-24-regular" },
+      { mat: "mdi:battery-outline", flu: "fluent:battery-1-24-regular", note: "outline" },
+      { mat: "mdi:battery-charging", flu: "fluent:battery-charge-24-regular" },
+      { mat: "mdi:car-battery", flu: "fluent:battery-checkmark-24-regular", note: "closest car batt" },
+      { mat: "mdi:smoke-detector", flu: "fluent:alert-24-regular", note: "generic detector" },
+      { mat: "mdi:smoke-detector-alert", flu: "fluent:alert-24-filled" },
+      { mat: "mdi:smoke-detector-variant", flu: "fluent:alert-24-regular" },
+      { mat: "mdi:smoke-detector-variant-alert", flu: "fluent:alert-24-filled" },
+      { mat: "mdi:thermometer", flu: "fluent:temperature-24-regular" },
+      { mat: "mdi:thermometer-lines", flu: "fluent:temperature-24-filled" },
+      { mat: "mdi:thermostat", flu: "fluent:temperature-24-regular" },
+      { mat: "mdi:meter-gas", flu: "fluent:gauge-24-regular" },
+      { mat: "mdi:gauge", flu: "fluent:gauge-24-regular" },
+      { mat: "mdi:speedometer", flu: "fluent:gauge-24-regular" },
+      { mat: "mdi:speedometer-slow", flu: "fluent:gauge-20-regular" },
+      { mat: "mdi:speedometer-medium", flu: "fluent:gauge-24-filled" },
+      { mat: "mdi:ray-vertex", flu: "fluent:flash-triangle-24-regular", note: "angular ray" },
+
+      // Connectivity
+      { mat: "mdi:wifi", flu: "fluent:wifi-1-24-regular" },
+      { mat: "mdi:cast", flu: "fluent:cast-24-regular" },
+      { mat: "mdi:cast-off", flu: "fluent:cast-24-regular", note: "add slash visually" },
+      { mat: "mdi:cast-connected", flu: "fluent:cast-24-filled" },
+      { mat: "mdi:audio-video", flu: "fluent:video-clip-24-regular" },
+      { mat: "mdi:audio-video-off", flu: "fluent:video-off-24-regular" },
+      { mat: "mdi:television", flu: "fluent:tv-24-regular" },
+      { mat: "mdi:television-off", flu: "fluent:tv-off-24-regular" },
+      { mat: "mdi:television-pause", flu: "fluent:tv-24-regular", note: "pair with pause badge" },
+      { mat: "mdi:television-play", flu: "fluent:tv-24-regular", note: "pair with play badge" },
+      { mat: "mdi:video", flu: "fluent:video-clip-24-regular" },
+      { mat: "mdi:video-off", flu: "fluent:video-off-24-regular" },
+      { mat: "mdi:speaker", flu: "fluent:speaker-2-24-regular" },
+      { mat: "mdi:speaker-off", flu: "fluent:speaker-mute-24-regular" },
+      { mat: "mdi:speaker-pause", flu: "fluent:speaker-pause-24-regular" },
+      { mat: "mdi:speaker-play", flu: "fluent:speaker-play-24-regular" },
+      { mat: "mdi:microphone-message", flu: "fluent:mic-on-24-regular", note: "mic + message" },
+
+      // Home / devices
+      { mat: "mdi:robot-vacuum", flu: "fluent:slide-size-24-regular", note: "closest circular bot" },
+      { mat: "mdi:robot-mower", flu: "fluent:vehicle-car-20-regular", note: "closest mower form" },
+      { mat: "mdi:robot", flu: "fluent:bot-24-regular" },
+      { mat: "mdi:robot-off", flu: "fluent:bot-off-24-regular" },
+      { mat: "mdi:robot-confused", flu: "fluent:bot-24-regular", note: "add confused badge" },
+      { mat: "mdi:door-open", flu: "fluent:door-28-regular" },
+      { mat: "mdi:door-closed", flu: "fluent:door-28-filled" },
+      { mat: "mdi:doorbell", flu: "fluent:doorbell-24-regular" },
+      { mat: "mdi:window-open", flu: "fluent:panel-separate-window-24-regular" },
+      { mat: "mdi:window-closed", flu: "fluent:panel-left-24-regular" },
+      { mat: "mdi:roller-shade", flu: "fluent:window-dev-edit-24-regular", note: "closest shade" },
+      { mat: "mdi:roller-shade-closed", flu: "fluent:window-dev-tools-24-regular", note: "closed shade" },
+      { mat: "mdi:window-shutter-open", flu: "fluent:panel-separate-window-24-regular" },
+      { mat: "mdi:window-shutter", flu: "fluent:panel-left-contract-24-regular" },
+      { mat: "mdi:blinds-horizontal", flu: "fluent:panel-left-expand-24-regular", note: "slats" },
+      { mat: "mdi:blinds-horizontal-closed", flu: "fluent:panel-left-24-regular", note: "closed slats" },
+      { mat: "mdi:curtains", flu: "fluent:panel-right-24-regular", note: "two panels" },
+      { mat: "mdi:curtains-closed", flu: "fluent:panel-bottom-24-regular" },
+      { mat: "mdi:garage-open", flu: "fluent:panel-top-expand-24-regular" },
+      { mat: "mdi:garage", flu: "fluent:panel-top-24-regular" },
+      { mat: "mdi:gate-open", flu: "fluent:panel-left-expand-24-regular" },
+      { mat: "mdi:gate", flu: "fluent:panel-left-24-regular" },
+      { mat: "mdi:home", flu: "fluent:home-24-regular" },
+      { mat: "mdi:home-outline", flu: "fluent:home-24-regular" },
+      { mat: "mdi:bed", flu: "fluent:bed-24-regular" },
+      { mat: "mdi:sofa", flu: "fluent:sofa-24-regular" },
+      { mat: "mdi:pipe-valve", flu: "fluent:slide-eraser-24-regular", note: "closest valve knob" },
+      { mat: "mdi:fan", flu: "fluent:fan-24-regular" },
+      { mat: "mdi:fan-off", flu: "fluent:fan-off-24-regular" },
+      { mat: "mdi:air-filter", flu: "fluent:filter-24-regular" },
+      { mat: "mdi:air-humidifier", flu: "fluent:humidifier-24-regular" },
+      { mat: "mdi:air-humidifier-off", flu: "fluent:humidifier-24-regular", note: "add slash" },
+      { mat: "mdi:water-boiler", flu: "fluent:kettle-24-regular" },
+      { mat: "mdi:water-boiler-off", flu: "fluent:kettle-24-regular", note: "off/slash variant" },
+      { mat: "mdi:water", flu: "fluent:water-24-regular" },
+      { mat: "mdi:water-off", flu: "fluent:water-off-24-regular" },
+      { mat: "mdi:water-percent", flu: "fluent:drop-24-regular", note: "humidity" },
+
+      // Finance
+      { mat: "mdi:cash", flu: "fluent:money-24-regular" },
+      { mat: "mdi:finance", flu: "fluent:chart-multiple-24-regular" },
+
+      // Media & controls
+      { mat: "mdi:music-note", flu: "fluent:music-note-2-24-regular" },
+      { mat: "mdi:music-note-off", flu: "fluent:music-note-off-24-regular" },
+      { mat: "mdi:vibrate", flu: "fluent:vibrate-24-regular" },
+      { mat: "mdi:audio-video", flu: "fluent:video-clip-24-regular" },
+      { mat: "mdi:video", flu: "fluent:video-clip-24-regular" },
+      { mat: "mdi:video-off", flu: "fluent:video-off-24-regular" },
+
+      // UI toggles and inputs
+      { mat: "mdi:toggle-switch-variant", flu: "fluent:toggle-left-24-regular" },
+      { mat: "mdi:toggle-switch-variant-off", flu: "fluent:toggle-right-24-regular", note: "off position" },
+      { mat: "mdi:button-pointer", flu: "fluent:cursor-click-24-regular" },
+      { mat: "mdi:form-textbox", flu: "fluent:textbox-24-regular" },
+      { mat: "mdi:format-list-bulleted", flu: "fluent:text-bullet-list-24-regular" },
+      { mat: "mdi:clipboard-list", flu: "fluent:clipboard-bullet-list-24-regular" },
+      { mat: "mdi:script-text", flu: "fluent:document-text-24-regular" },
+      { mat: "mdi:script-text-play", flu: "fluent:document-arrow-right-24-regular", note: "script run" },
+      { mat: "mdi:checkbox-marked-circle", flu: "fluent:checkmark-circle-24-regular" },
+      { mat: "mdi:radiobox-blank", flu: "fluent:radio-button-24-regular" },
+
+      // Imagery & art
+      { mat: "mdi:image", flu: "fluent:image-24-regular" },
+      { mat: "mdi:palette", flu: "fluent:color-24-regular" },
+
+      // Misc tech & data
+      { mat: "mdi:database", flu: "fluent:database-24-regular" },
+      { mat: "mdi:rocket-launch", flu: "fluent:rocket-24-regular" },
+      { mat: "mdi:lightbulb", flu: "fluent:lightbulb-24-regular" },
+      { mat: "mdi:crosshairs-question", flu: "fluent:target-arrow-24-regular", note: "aim/help" },
+      { mat: "mdi:package", flu: "fluent:box-24-regular" },
+      { mat: "mdi:package-up", flu: "fluent:box-arrow-up-24-regular" },
+      { mat: "mdi:target", flu: "fluent:target-24-regular" },
+      { mat: "mdi:angle-acute", flu: "fluent:triangle-24-regular", note: "acute angle vibe" },
+      { mat: "mdi:sine-wave", flu: "fluent:wave-triangle-20-regular", note: "closest waveform" },
+      { mat: "mdi:ear-hearing", flu: "fluent:ear-24-regular" },
+      { mat: "mdi:eye", flu: "fluent:eye-24-regular" },
+      { mat: "mdi:eye-check", flu: "fluent:eye-checkmark-24-regular" },
+      { mat: "mdi:motion-sensor", flu: "fluent:presence-available-24-regular", note: "motion rings" },
+      { mat: "mdi:motion-sensor-off", flu: "fluent:presence-unknown-24-regular", note: "off/disabled" },
+
+      // Layout & crop
+      { mat: "mdi:crop-portrait", flu: "fluent:crop-24-regular" },
+
+      // Rooms & furniture
+      { mat: "mdi:baby-carriage", flu: "fluent:vehicle-buggy-24-regular" },
+
+      // Rotation
+      { mat: "mdi:rotate-right", flu: "fluent:arrow-rotate-clockwise-24-regular" },
+      { mat: "mdi:rotate-left", flu: "fluent:arrow-rotate-counterclockwise-24-regular" },
+
+      // Network state
+      { mat: "mdi:close-network-outline", flu: "fluent:prohibited-24-regular", note: "network blocked" },
+      { mat: "mdi:check-network-outline", flu: "fluent:checkmark-24-regular", note: "network ok" },
+    ];
+
+    const tbody = document.querySelector("#icon-table tbody");
+    mappings.forEach(({ mat, flu, tab, ph, note }) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td class="col-icon"><span class="icon iconify" data-icon="${mat}"></span></td>
+        <td class="col-name"><code>${mat}</code></td>
+        <td class="col-icon"><span class="icon iconify" data-icon="${flu}"></span></td>
+        <td class="col-name"><code>${flu}</code></td>
+        <td class="col-icon">${tab ? `<span class="icon iconify" data-icon="${tab}"></span>` : ""}</td>
+        <td class="col-name">${tab ? `<code>${tab}</code>` : ""}</td>
+        <td class="col-icon">${ph ? `<span class="icon iconify" data-icon="${ph}"></span>` : ""}</td>
+        <td class="col-name">${ph ? `<code>${ph}</code>` : ""}</td>
+        <td>${note || ""}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  </script>
+</body>
+</html>
+
