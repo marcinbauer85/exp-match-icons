@@ -356,13 +356,31 @@
 
           function scanIcons() {
             try { if (window.Iconify && typeof Iconify.scan === 'function') Iconify.scan(); } catch (e) {}
+            const rows = Array.from(document.querySelectorAll('#icon-table tbody tr'));
             const missingNow = [];
-            document.querySelectorAll('.icon.iconify').forEach(el => {
-              const iconName = el.getAttribute('data-icon') || '';
-              const hasSvg = el.querySelector('svg') !== null;
-              if (!hasSvg) {
-                missingNow.push({ name: iconName, el });
-              }
+            rows.forEach(row => {
+              // cells: 0 mat icon, 1 mat name, 2 fluent icon, 3 fluent name, 4 tabler icon, 5 tabler name, 6 phosphor icon, 7 phosphor name
+              const getIconSpan = (cellIndex) => {
+                const cell = row.cells[cellIndex];
+                return cell ? cell.querySelector('.icon.iconify') : null;
+              };
+
+              const matSpan = getIconSpan(0);
+              const fluSpan = getIconSpan(2);
+              const tabSpan = getIconSpan(4);
+              const phSpan = getIconSpan(6);
+
+              const check = (span, key) => {
+                if (!span) return;
+                const name = span.getAttribute('data-icon') || '';
+                const hasSvg = span.querySelector('svg') !== null;
+                if (!hasSvg) missingNow.push({ name, el: span, key });
+              };
+
+              check(matSpan, 'mdi');
+              check(fluSpan, 'fluent');
+              check(tabSpan, 'tabler');
+              check(phSpan, 'ph');
             });
             return missingNow;
           }
@@ -392,14 +410,28 @@
             el.title = `Icon failed to load: ${name}`;
           });
 
-          // Count missing icons per set (prefix before ':') and update summary
-          const counts = { mdi: 0, fluent: 0, tabler: 0, ph: 0, other: 0 };
-          missing.forEach(name => {
-            const parts = name.split(':');
-            const key = parts[0] || 'other';
-            if (counts.hasOwnProperty(key)) counts[key]++;
-            else counts.other++;
-          });
+          // Count missing icons by checking the `.icon-missing` CSS marker per table column
+          const counts = { mdi: 0, fluent: 0, tabler: 0, ph: 0 };
+          try {
+            const rows = Array.from(document.querySelectorAll('#icon-table tbody tr'));
+            rows.forEach(row => {
+              const getSpan = (i) => row.cells[i] ? row.cells[i].querySelector('.icon.iconify') : null;
+              const mat = getSpan(0);
+              const flu = getSpan(2);
+              const tab = getSpan(4);
+              const ph = getSpan(6);
+              if (mat && mat.classList.contains('icon-missing')) counts.mdi++;
+              if (flu && flu.classList.contains('icon-missing')) counts.fluent++;
+              if (tab && tab.classList.contains('icon-missing')) counts.tabler++;
+              if (ph && ph.classList.contains('icon-missing')) counts.ph++;
+            });
+          } catch (e) {
+            // fallback: derive from finalMissing keys if something goes wrong
+            finalMissing.forEach(item => {
+              const key = item.key || (item.name && item.name.split(':')[0]) || 'other';
+              if (counts.hasOwnProperty(key)) counts[key]++;
+            });
+          }
 
           const summaryEl = document.getElementById('icon-summary');
           if (summaryEl) {
