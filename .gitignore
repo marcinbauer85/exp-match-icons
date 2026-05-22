@@ -1,0 +1,5 @@
+
+# Generated icon PNG cache (re-created by fetch_svgs.py)
+tools/icons/
+# DINOv2 match results (re-created by embed_and_match.py)
+tools/matches.json
